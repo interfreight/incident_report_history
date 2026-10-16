@@ -117,8 +117,29 @@ function myDecision(r) {
     return s.includes("approv") ? "s-approved" : s.includes("reject") ? "s-rejected" : s.includes("pending") ? "s-pending" : "s-waiting";
   }
   function statusBadge(v) { return `<span class="status ${statusClass(v)}">${esc(statusText(v))}</span>`; }
-  function showMessage(text, type="ok") { const el=$("message"); el.textContent=text; el.className=`message show ${type}`; }
-  function clearMessage(){ $("message").className="message"; $("message").textContent=""; }
+ 
+function showMessage(text, type = "ok") {
+    const el = $("message");
+
+    if (!el) {
+        console.warn("Message element #message was not found:", text);
+        return;
+    }
+
+    el.textContent = text;
+    el.className = `message show ${type}`;
+}
+
+
+function clearMessage() {
+    const el = $("message");
+
+    if (!el) return;
+
+    el.className = "message";
+    el.textContent = "";
+}
+
   function isHR(){return currentRole==="hr";}
   function awaiting(r){return isHR() ? !isRejected(r.hr_status) && !isApproved(r.hr_status) : isApproved(r.hr_status) && !isRejected(r.admin_status) && !isApproved(r.admin_status);}
   function isApproved(v){return String(v||"").toLowerCase()==="approved";}
