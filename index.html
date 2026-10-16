@@ -1,0 +1,574 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Incident Report | Interfreight Group</title>
+
+<style>
+:root {
+    --blue: #0D3B66;
+    --light-blue: #1E5FA8;
+    --background: #f3f6fb;
+    --border: #dce3ec;
+    --text: #253449;
+    --muted: #66758a;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--background);
+    color: var(--text);
+}
+
+.header {
+    background: linear-gradient(110deg, var(--blue), var(--light-blue));
+    color: white;
+    padding: 25px 20px;
+}
+
+.header-inner {
+    max-width: 1050px;
+    margin: auto;
+}
+
+.company {
+    font-size: 25px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    margin: 0;
+}
+
+.header p {
+    margin: 7px 0 0;
+    font-size: 14px;
+    opacity: .9;
+}
+
+.container {
+    max-width: 1050px;
+    margin: 28px auto;
+    padding: 0 18px;
+}
+
+.card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    margin-bottom: 22px;
+    box-shadow: 0 5px 18px rgba(24, 48, 80, .05);
+}
+
+.card-title {
+    font-size: 20px;
+    color: var(--blue);
+    margin: 0 0 7px;
+}
+
+.subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0 0 24px;
+    line-height: 1.6;
+}
+
+.section-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--blue);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+    margin: 25px 0 18px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.field {
+    min-width: 0;
+}
+
+.full {
+    grid-column: 1 / -1;
+}
+
+label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.required {
+    color: #c62828;
+}
+
+input, select, textarea {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    font: inherit;
+    font-size: 14px;
+    color: var(--text);
+    background: white;
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: 2px solid #b8d7ff;
+    border-color: var(--light-blue);
+}
+
+textarea {
+    min-height: 125px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+.help {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 7px;
+    line-height: 1.5;
+}
+
+.file-box {
+    padding: 18px;
+    border: 1px dashed #9bb6d3;
+    border-radius: 8px;
+    background: #f8fbff;
+}
+
+.file-box input {
+    border: 0;
+    padding: 5px 0;
+    background: transparent;
+}
+
+.file-name {
+    font-size: 12px;
+    margin-top: 8px;
+    overflow-wrap: anywhere;
+    color: var(--muted);
+}
+
+.notice {
+    background: #eef6ff;
+    border-left: 4px solid var(--light-blue);
+    padding: 13px 15px;
+    font-size: 13px;
+    line-height: 1.6;
+    border-radius: 4px;
+    margin: 22px 0;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 24px;
+}
+
+button {
+    padding: 12px 20px;
+    border-radius: 7px;
+    border: 0;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.btn-primary {
+    background: var(--blue);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--light-blue);
+}
+
+.btn-secondary {
+    background: #e9eef5;
+    color: var(--blue);
+}
+
+button:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+.message {
+    display: none;
+    padding: 14px;
+    border-radius: 7px;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-top: 18px;
+}
+
+.message.error {
+    display: block;
+    background: #fff0f0;
+    color: #a32020;
+}
+
+.message.success {
+    display: block;
+    background: #eaf8ef;
+    color: #176534;
+}
+
+.footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    padding: 10px 20px 28px;
+}
+
+@media (max-width: 650px) {
+    .header {
+        padding: 22px 17px;
+    }
+
+    .company {
+        font-size: 21px;
+    }
+
+    .container {
+        margin-top: 16px;
+        padding: 0 12px;
+    }
+
+    .card {
+        padding: 19px 15px;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .full {
+        grid-column: auto;
+    }
+
+    .actions {
+        flex-direction: column-reverse;
+    }
+
+    .actions button {
+        width: 100%;
+    }
+}
+
+@media print {
+    body {
+        background: white;
+    }
+
+    .header {
+        background: white !important;
+        color: #0D3B66 !important;
+        border-bottom: 2px solid #0D3B66;
+        padding: 12px 0;
+    }
+
+    .container {
+        margin: 15px auto;
+        padding: 0;
+    }
+
+    .card {
+        border: 0;
+        box-shadow: none;
+        padding: 0;
+    }
+
+    .actions, .footer, .file-box input,
+    .notice, #message {
+        display: none !important;
+    }
+
+    input, select, textarea {
+        border: 0;
+        padding: 3px 0;
+        appearance: none;
+        background: white;
+        color: black;
+    }
+
+    textarea {
+        min-height: 70px;
+    }
+
+    .section-title {
+        break-after: avoid;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+    <div class="header-inner">
+        <h1 class="company">INTERFREIGHT GROUP</h1>
+        <p>Incident Report Management</p>
+    </div>
+</header>
+
+<main class="container">
+    <section class="card">
+        <h2 class="card-title">Incident Report Form</h2>
+        <p class="subtitle">
+            Please complete all required fields accurately.
+            Your report will be subject to review by your department manager.
+        </p>
+
+        <form id="incidentForm">
+            <h3 class="section-title">01 — Employee Information</h3>
+
+            <div class="grid">
+                <div class="field">
+                    <label for="employeeName">
+                        Employee Full Name <span class="required">*</span>
+                    </label>
+                    <input id="employeeName" name="employee_name"
+                           type="text" maxlength="150" required
+                           placeholder="Enter your full name">
+                </div>
+
+                <div class="field">
+                    <label for="employeeId">
+                        Employee ID <span class="required">*</span>
+                    </label>
+                    <input id="employeeId" name="employee_id"
+                           type="text" maxlength="50" required
+                           placeholder="Enter your employee ID">
+                </div>
+
+                <div class="field">
+                    <label for="department">
+                        Department <span class="required">*</span>
+                    </label>
+                    <select id="department" name="department" required>
+                        <option value="">Select department</option>
+                        <option>Accounting</option>
+                        <option>Sales</option>
+                        <option>Operations</option>
+                        <option>Transport</option>
+                        <option>Forwarding</option>
+                        <option>HR</option>
+                        <option>Admin</option>
+                        <option>IT</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="reportDate">
+                        Date of Report <span class="required">*</span>
+                    </label>
+                    <input id="reportDate" name="report_date"
+                           type="date" required>
+                </div>
+            </div>
+
+            <h3 class="section-title">02 — Incident Details</h3>
+
+            <div class="grid">
+                <div class="field">
+                    <label for="incidentDate">
+                        Date of Incident <span class="required">*</span>
+                    </label>
+                    <input id="incidentDate" name="incident_date"
+                           type="date" required>
+                </div>
+
+                <div class="field">
+                    <label for="incidentLocation">
+                        Location of Incident <span class="required">*</span>
+                    </label>
+                    <input id="incidentLocation" name="incident_location"
+                           type="text" maxlength="250" required
+                           placeholder="e.g. Head Office, 2nd Floor">
+                </div>
+
+                <div class="field full">
+                    <label for="description">
+                        Detailed Description <span class="required">*</span>
+                    </label>
+                    <textarea id="description" name="description"
+                              maxlength="10000" required
+                              placeholder="Describe what happened, when it happened, and the circumstances surrounding the incident."></textarea>
+                    <span class="help">
+                        Provide factual details, including the sequence of events.
+                    </span>
+                </div>
+
+                <div class="field full">
+                    <label for="individuals">
+                        Individuals Involved <span class="required">*</span>
+                    </label>
+                    <textarea id="individuals" name="individuals_involved"
+                              maxlength="5000" required
+                              placeholder="List the names and roles of the people involved or witnesses. If unknown, state that clearly."></textarea>
+                </div>
+            </div>
+
+            <h3 class="section-title">03 — Supporting Attachment</h3>
+
+            <div class="file-box">
+                <label for="attachment">Attach Supporting File (Optional)</label>
+                <input id="attachment" name="attachment" type="file"
+                       accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+                <span class="help">
+                    Allowed formats: PDF, JPG, PNG, DOC, DOCX.
+                    Maximum file size: 5 MB.
+                </span>
+                <div id="fileName" class="file-name">
+                    No file selected.
+                </div>
+            </div>
+
+            <div class="notice">
+                <strong>Important:</strong> Please verify the information before
+                submitting. Your department manager must review the report first.
+                HR/Admin review follows manager approval.
+            </div>
+
+            <div id="message" class="message" role="status"
+                 aria-live="polite"></div>
+
+            <div class="actions">
+                <button type="button" class="btn-secondary"
+                        id="printButton">Print Form</button>
+                <button type="reset" class="btn-secondary">Clear Form</button>
+                <button type="submit" class="btn-primary">
+                    Submit Incident Report
+                </button>
+            </div>
+        </form>
+    </section>
+</main>
+
+<footer class="footer">
+    INTERFREIGHT GROUP · Incident Report Management
+</footer>
+
+<script>
+const form = document.getElementById("incidentForm");
+const reportDate = document.getElementById("reportDate");
+const incidentDate = document.getElementById("incidentDate");
+const attachment = document.getElementById("attachment");
+const fileName = document.getElementById("fileName");
+const message = document.getElementById("message");
+
+function localDateString() {
+    const now = new Date();
+    const offset = now.getTimezoneOffset();
+    return new Date(now.getTime() - offset * 60000)
+        .toISOString().slice(0, 10);
+}
+
+reportDate.value = localDateString();
+
+attachment.addEventListener("change", () => {
+    const file = attachment.files[0];
+
+    if (!file) {
+        fileName.textContent = "No file selected.";
+        return;
+    }
+
+    const allowedTypes = [
+        "application/pdf",
+        "image/jpeg",
+        "image/png",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    ];
+
+    const allowedExtensions = /\.(pdf|jpe?g|png|docx?)$/i;
+
+    if (!allowedExtensions.test(file.name) ||
+        (file.type && !allowedTypes.includes(file.type))) {
+        attachment.value = "";
+        fileName.textContent = "No file selected.";
+        showMessage("Please select a PDF, JPG, PNG, DOC, or DOCX file.", "error");
+        return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+        attachment.value = "";
+        fileName.textContent = "No file selected.";
+        showMessage("The attachment must not exceed 5 MB.", "error");
+        return;
+    }
+
+    fileName.textContent =
+        file.name + " (" + (file.size / 1024 / 1024).toFixed(2) + " MB)";
+    clearMessage();
+});
+
+function showMessage(text, type) {
+    message.textContent = text;
+    message.className = "message " + type;
+}
+
+function clearMessage() {
+    message.textContent = "";
+    message.className = "message";
+}
+
+form.addEventListener("reset", () => {
+    setTimeout(() => {
+        reportDate.value = localDateString();
+        fileName.textContent = "No file selected.";
+        clearMessage();
+    }, 0);
+});
+
+document.getElementById("printButton").addEventListener("click", () => {
+    window.print();
+});
+
+form.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    if (!form.reportValidity()) return;
+
+    if (incidentDate.value > localDateString()) {
+        showMessage("The incident date cannot be in the future.", "error");
+        return;
+    }
+
+    const file = attachment.files[0];
+
+    if (file && file.size > 5 * 1024 * 1024) {
+        showMessage("The attachment must not exceed 5 MB.", "error");
+        return;
+    }
+
+    showMessage(
+        "The form is valid, but it has NOT been submitted or saved. " +
+        "The next step is to connect this page to Supabase.",
+        "success"
+    );
+});
+</script>
+
+</body>
+</html>
