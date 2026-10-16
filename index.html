@@ -368,21 +368,37 @@ async function decide(decision) {
     window.print();
   }
   $("reportRows").addEventListener("click",e=>{});
-  $("backButton").addEventListener("click", () => {
-    // Replace this portal's history entry so Chrome Back won't return to this page.
-    const referrer = document.referrer;
-    if (referrer) {
-      try {
-        const target = new URL(referrer);
-        if (target.origin === window.location.origin) {
-          window.location.replace(target.href);
-          return;
-        }
-      } catch (e) {}
+
+$("backButton").addEventListener("click", () => {
+    const user = getUser();
+    const role = String(user?.role || "").trim().toLowerCase();
+
+    if (
+        role === "hr" ||
+        role.includes("human resource") ||
+        role.includes("hr officer") ||
+        role.includes("hr staff") ||
+        role.includes("hr manager")
+    ) {
+        window.location.href =
+            "https://interfreight.github.io/Hr_Dashboard/";
+        return;
     }
-    // Change this fallback if your dashboard uses a different filename or route.
-    window.location.replace("Employee_Dashboard.html");
-  });
+
+    if (
+        role === "admin" ||
+        role.includes("office admin") ||
+        role.includes("administrator") ||
+        role.includes("admin manager")
+    ) {
+        window.location.href =
+            "https://interfreight.github.io/Admin_Dashboard/";
+        return;
+    }
+
+    alert("Contact IT administrator.");
+});
+
   $("refreshBtn").addEventListener("click",loadReports);
   $("searchInput").addEventListener("input",renderRows);
   $("statusFilter").addEventListener("change",renderRows);
