@@ -53,7 +53,7 @@
   "use strict";
   const SUPABASE_URL = "https://tuihpvykuqbqnfyfepql.supabase.co";
   // Use your project's public anon/publishable key here. Never put a service-role key in browser code.
-  const SUPABASE_ANON_KEY = "PASTE_YOUR_SUPABASE_ANON_KEY_HERE";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR1aWhwdnlrdXFicW5meWZlcHFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3Mjg4OTcsImV4cCI6MjA5NzMwNDg5N30.HZKS8CgFLjkZ-Bx2AIjFjurH3IsKjvf37Ft852CzJsQ";
   const TABLE = "incident_reports";
   const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   const $ = id => document.getElementById(id);
@@ -63,12 +63,47 @@
     try { return JSON.parse(localStorage.getItem("currentUser") || "null"); }
     catch (e) { console.error("Could not read currentUser session", e); return null; }
   }
-  function roleOf(user) {
+ 
+function roleOf(user) {
     const role = String(user?.role || "").trim().toLowerCase();
-    if (role === "hr" || role.includes("human resource") || role.includes("hr officer") || role === "hr staff") return "hr";
-    if (role === "admin" || role.includes("office admin") || role.includes("administrator") || role === "office administrator") return "admin";
+
+    if (
+        role === "hr" ||
+        role.includes("human resource") ||
+        role.includes("hr officer") ||
+        role.includes("hr staff") ||
+        role.includes("hr manager")
+    ) {
+        return "hr";
+    }
+
+    if (
+        role === "admin" ||
+        role.includes("office admin") ||
+        role.includes("administrator") ||
+        role.includes("admin manager")
+    ) {
+        return "admin";
+    }
+
     return "";
-  }
+}
+
+function isHR() {
+    return currentRole === "hr";
+}
+
+function awaiting(r) {
+    return (
+        String(r.manager_status || "").toLowerCase() === "approved" &&
+        String(r.hr_status || "").toLowerCase() === "waiting"
+    );
+}
+
+function myDecision(r) {
+    return r.hr_status;
+}
+
   function esc(value) {
     return String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   }
@@ -105,27 +140,54 @@
     }
     return true;
   }
-  async function loadReports(){
+
+async function loadReports() {
     clearMessage();
-    if(!currentUser||!currentRole)return;
-    $("reportRows").innerHTML='<tr><td colspan="7" class="empty">Loading…</td></tr>';
-    if(SUPABASE_ANON_KEY==="PASTE_YOUR_SUPABASE_ANON_KEY_HERE"){
-      $("reportRows").innerHTML='<tr><td colspan="7" class="empty">Add your Supabase anon/publishable key in the code before loading records.</td></tr>';
-      showMessage("Set SUPABASE_ANON_KEY near the top of the script. Do not use a service-role key.","error"); return;
+
+    if (!currentUser || !currentRole) return;
+
+    $("reportRows").innerHTML =
+        '<tr><td colspan="7" class="empty">Loading…</td></tr>';
+
+    if (SUPABASE_ANON_KEY === "PASTE_YOUR_SUPABASE_ANON_KEY_HERE") {
+        $("reportRows").innerHTML =
+            '<tr><td colspan="7" class="empty">Add your Supabase anon/publishable key in the code before loading records.</td></tr>';
+
+        showMessage(
+            "Set SUPABASE_ANON_KEY near the top of the script. Do not use a service-role key.",
+            "error"
+        );
+        return;
     }
-    try{
-      // Manager-approved only; Admin sees reports after HR approval.
-      const query=client.from(TABLE).select("*").eq("manager_status","Approved").order("created_at",{ascending:false});
-      const {data,error}=await query;
-      if(error)throw error;
-      reports=data||[];
-      fillDepartments(); renderRows(); updateStats();
-    }catch(e){
-      console.error("Load incident reports failed:",e);
-      $("reportRows").innerHTML='<tr><td colspan="7" class="empty">Could not load reports. Check the Supabase columns, RLS policies, and browser console.</td></tr>';
-      showMessage("Supabase error: "+(e.message||"Unable to load reports"),"error");
+
+    try {
+        const { data, error } = await client
+            .from(TABLE)
+            .select("*")
+            .eq("manager_status", "Approved")
+            .order("created_at", { ascending: false });
+
+        if (error) throw error;
+
+        reports = data || [];
+
+        fillDepartments();
+        renderRows();
+        updateStats();
+
+    } catch (e) {
+        console.error("Load incident reports failed:", e);
+
+        $("reportRows").innerHTML =
+            '<tr><td colspan="7" class="empty">Could not load reports. Check the Supabase columns, RLS policies, and browser console.</td></tr>';
+
+        showMessage(
+            "Supabase error: " + (e.message || "Unable to load reports"),
+            "error"
+        );
     }
-  }
+}
+
   function fillDepartments(){
     const select=$("departmentFilter"), old=select.value;
     const depts=[...new Set(reports.map(r=>r.department).filter(Boolean))].sort();
@@ -175,35 +237,97 @@
     $("detailOverlay").classList.add("open");
   }
   function closeModal(){$("detailOverlay").classList.remove("open");}
-  async function decide(decision){
-    if(!selectedReport||busy)return;
-    const remark=$("remarks").value.trim();
-    if(decision==="Rejected"&&!remark){showMessage("Please enter a reason in the approval remarks before rejecting.","error");return;}
-    if(!awaiting(selectedReport)){showMessage("This report is no longer waiting for your decision. Refresh the list.","error");return;}
-    const confirmText=decision==="Approved"?"Approve this incident report?":"Reject this incident report? The next approval step will not receive a rejected report.";
-    if(!confirm(confirmText))return;
-    busy=true;$("approveBtn").disabled=$("rejectBtn").disabled=true;
-    try{
-      const now=new Date().toISOString();
-      const update={
-        hr_status:decision,
-        approval_remarks:remark||null,
-        approval_by:currentUser.full_name||currentUser.username||String(currentUser.id||""),
-        approval_role:currentRole==="hr"?"HR":"Office Admin",
-        approval_at:now
-      };
-      // Both HR and Office Admin share one decision. Only one can change Waiting to Approved/Rejected.
-      const q=client.from(TABLE).update(update)
-        .eq("id",selectedReport.id)
-        .eq("manager_status","Approved")
-        .eq("hr_status","Waiting");
-      const {data,error}=await q.select("id");
-      if(error)throw error;
-      if(!data||data.length===0)throw new Error("No record updated. The report may have changed, or database permissions/RLS denied this action.");
-      closeModal();showMessage(`Report IR-${selectedReport.id} marked ${decision.toLowerCase()}.`,"ok");await loadReports();
-    }catch(e){console.error("Approval update failed:",e);showMessage("Could not save decision: "+(e.message||"Unknown error"),"error");}
-    finally{busy=false;$("approveBtn").disabled=$("rejectBtn").disabled=false;}
-  }
+ 
+async function decide(decision) {
+    if (!selectedReport || busy) return;
+
+    const remark = $("remarks").value.trim();
+
+    if (decision === "Rejected" && !remark) {
+        showMessage(
+            "Please enter a reason in the approval remarks before rejecting.",
+            "error"
+        );
+        return;
+    }
+
+    if (!awaiting(selectedReport)) {
+        showMessage(
+            "This report has already been processed or is no longer waiting for review. Refresh the list.",
+            "error"
+        );
+        await loadReports();
+        return;
+    }
+
+    const confirmText = decision === "Approved"
+        ? "Approve this incident report for the shared HR/Admin review?"
+        : "Reject this incident report?";
+
+    if (!confirm(confirmText)) return;
+
+    busy = true;
+    $("approveBtn").disabled = true;
+    $("rejectBtn").disabled = true;
+
+    try {
+        const now = new Date().toISOString();
+
+        const update = {
+            hr_status: decision,
+            approval_remarks: remark || null,
+            approval_by:
+                currentUser.full_name ||
+                currentUser.username ||
+                String(currentUser.id || ""),
+            approval_role: currentRole === "hr" ? "HR" : "Office Admin",
+            approval_at: now
+        };
+
+        const { data, error } = await client
+            .from(TABLE)
+            .update(update)
+            .eq("id", selectedReport.id)
+            .eq("manager_status", "Approved")
+            .eq("hr_status", "Waiting")
+            .select("id");
+
+        if (error) throw error;
+
+        if (!data || data.length === 0) {
+            throw new Error(
+                "No record was updated. Another reviewer may have already decided, or Supabase permissions prevented the update."
+            );
+        }
+
+        const reportId = selectedReport.id;
+
+        closeModal();
+
+        showMessage(
+            `Report IR-${reportId} marked ${decision.toLowerCase()}.`,
+            "ok"
+        );
+
+        await loadReports();
+
+    } catch (e) {
+        console.error("Approval update failed:", e);
+
+        showMessage(
+            "Could not save decision: " + (e.message || "Unknown error"),
+            "error"
+        );
+
+        await loadReports();
+
+    } finally {
+        busy = false;
+        $("approveBtn").disabled = false;
+        $("rejectBtn").disabled = false;
+    }
+}
+
   function printReport(r){
     const cell=(label,value,full=false)=>`<div class="print-cell ${full?"full":""}"><div class="print-label">${esc(label)}</div><div class="print-value">${esc(value||"—")}</div></div>`;
     $("printArea").innerHTML=`<div class="print-sheet">
@@ -214,7 +338,7 @@
       ${cell("Incident date",dateText(r.incident_date))}${cell("Incident location",r.incident_location)}
       ${cell("Individuals involved",r.individuals_involved,true)}${cell("Incident description",r.description,true)}</div>
       <div class="print-section">REVIEW AND APPROVAL RECORD</div><div class="print-grid">
-      ${cell("Manager status",statusText(r.manager_status))}${cell("Manager remarks",r.manager_remarks)}
+      ${cell("Manager status",statusText(r.manager_status))}${cell("Manager remarks",r.manager_comments)}
       ${cell("Shared HR / Office Admin decision",statusText(r.hr_status))}${cell("Approval remarks",r.approval_remarks)}
       ${cell("Decision made by",r.approval_by)}${cell("Approver role",r.approval_role)}
       ${cell("Decision date",r.approval_at?new Date(r.approval_at).toLocaleString("en-PH"):"—")}${cell("Final approval status",fullyApproved(r)?"Fully Approved":"Not fully approved")}</div>
