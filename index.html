@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,63 +7,312 @@
 <title>INTERFREIGHT | Incident Report Approvals</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-:root{--navy:#102b4e;--blue:#1d5fa7;--blue2:#eaf2fc;--bg:#f4f7fb;--text:#1d2939;--muted:#667085;--line:#e4eaf2;--white:#fff;--green:#16804a;--greenbg:#e8f7ef;--red:#b42318;--redbg:#fff0ee;--amber:#946200;--amberbg:#fff5d9;--shadow:0 8px 28px rgba(16,43,78,.07)}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,Arial,sans-serif;color:var(--text)}button,input,select,textarea{font:inherit}.app{min-height:100vh}.topbar{height:72px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 28px;gap:16px}.topbar-left{display:flex;align-items:center;gap:16px;min-width:0}.back-button{border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.1);color:#fff;border-radius:9px;padding:9px 13px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}.back-button:hover{background:rgba(255,255,255,.2)}.brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:.4px}.brandmark{width:40px;height:40px;border-radius:11px;background:#fff;color:var(--navy);display:grid;place-items:center;font-weight:800}.brand small{display:block;font-weight:500;opacity:.75;font-size:11px;letter-spacing:1.3px;margin-top:3px}.userbox{display:flex;align-items:center;gap:10px;font-size:13px}.avatar{width:34px;height:34px;border-radius:50%;background:#dbeafe;color:var(--navy);display:grid;place-items:center;font-weight:800}.layout{display:grid;grid-template-columns:240px minmax(0,1fr);min-height:calc(100vh - 72px)}.sidebar{background:#fff;border-right:1px solid var(--line);padding:24px 14px}.navlabel{font-size:10px;color:#98a2b3;font-weight:800;letter-spacing:1.3px;padding:0 12px 12px}.navitem{padding:12px;border-radius:10px;color:#475467;display:flex;gap:12px;align-items:center;font-size:13px;font-weight:600;margin-bottom:5px}.navitem.active{background:var(--blue2);color:var(--blue)}.sidebar-note{margin:26px 8px 0;padding:14px;border:1px solid var(--line);border-radius:12px;font-size:11px;color:var(--muted);line-height:1.6}.main{padding:28px;min-width:0;max-width:1600px;width:100%;margin:0 auto}.heading{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:22px}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:1.4px;color:var(--blue);font-weight:800}.heading h1{font-size:26px;margin:7px 0 7px;letter-spacing:-.6px}.heading p{margin:0;color:var(--muted);font-size:13px;line-height:1.6}.role-pill{background:#eaf2fc;color:var(--blue);padding:9px 13px;border-radius:999px;font-size:12px;font-weight:800;white-space:nowrap}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:22px}.stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:17px;box-shadow:var(--shadow)}.stat-top{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px;font-weight:600}.stat-icon{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;background:var(--blue2);color:var(--blue)}.stat strong{display:block;font-size:27px;margin-top:12px;letter-spacing:-.7px}.panel{background:#fff;border:1px solid var(--line);border-radius:15px;box-shadow:var(--shadow);overflow:hidden}.panelhead{padding:18px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px}.panelhead h2{font-size:15px;margin:0}.panelhead p{font-size:12px;color:var(--muted);margin:5px 0 0}.filters{padding:16px 20px;display:flex;gap:10px;flex-wrap:wrap;border-bottom:1px solid var(--line)}.filters input,.filters select{background:#fff;border:1px solid #d0d5dd;border-radius:9px;padding:10px 12px;font-size:12px;color:var(--text);min-height:39px}.filters input{flex:1;min-width:190px}.filters select{min-width:140px}.btn{border:0;border-radius:9px;padding:10px 14px;font-weight:700;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:38px}.btn:disabled{opacity:.45;cursor:not-allowed}.primary{background:var(--blue);color:#fff}.secondary{background:#fff;border:1px solid #d0d5dd;color:#344054}.approve{background:var(--greenbg);color:var(--green)}.reject{background:var(--redbg);color:var(--red)}.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:850px}th{background:#fafbfc;color:#667085;text-align:left;text-transform:uppercase;letter-spacing:.6px;font-size:10px;padding:13px 17px;border-bottom:1px solid var(--line)}td{padding:15px 17px;border-bottom:1px solid #eef1f5;font-size:12px;vertical-align:middle}tbody tr:hover{background:#fbfdff}.person{font-weight:700;font-size:12px}.sub{display:block;color:var(--muted);font-size:11px;margin-top:4px}.status{display:inline-flex;padding:6px 9px;border-radius:999px;font-size:10px;font-weight:800;white-space:nowrap}.s-pending{background:var(--amberbg);color:var(--amber)}.s-approved{background:var(--greenbg);color:var(--green)}.s-rejected{background:var(--redbg);color:var(--red)}.s-waiting{background:#eef2f6;color:#475467}.actions{display:flex;gap:6px;flex-wrap:wrap}.smallbtn{border:1px solid var(--line);background:#fff;border-radius:7px;padding:7px 9px;font-size:11px;font-weight:700;cursor:pointer}.empty{padding:42px 20px;text-align:center;color:var(--muted);font-size:13px}.notice{padding:12px 15px;border-radius:10px;background:#fff5d9;color:#694b00;font-size:12px;line-height:1.6;margin-bottom:18px;border:1px solid #f4df9c}.message{display:none;padding:12px 15px;border-radius:10px;font-size:12px;margin-bottom:15px}.message.show{display:block}.message.error{background:var(--redbg);color:var(--red)}.message.ok{background:var(--greenbg);color:var(--green)}.overlay{position:fixed;inset:0;background:rgba(16,24,40,.55);z-index:20;display:none;align-items:center;justify-content:center;padding:18px}.overlay.open{display:flex}.modal{background:#fff;border-radius:16px;max-width:800px;width:100%;max-height:92vh;overflow:auto;box-shadow:0 24px 80px #0003}.modalhead{display:flex;justify-content:space-between;align-items:center;padding:19px 22px;border-bottom:1px solid var(--line);position:sticky;top:0;background:#fff;z-index:1}.modalhead h2{margin:0;font-size:17px}.x{border:0;background:#f2f4f7;border-radius:8px;width:34px;height:34px;font-size:20px;cursor:pointer}.modalbody{padding:22px}.detailgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.field{padding:13px;background:#f8fafc;border:1px solid var(--line);border-radius:10px;min-width:0}.field.full{grid-column:1/-1}.field label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);font-weight:800;margin-bottom:7px}.field div{font-size:13px;line-height:1.6;overflow-wrap:anywhere;white-space:pre-wrap}.modalfoot{padding:16px 22px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}.remarks{width:100%;border:1px solid #d0d5dd;border-radius:9px;padding:11px;min-height:78px;resize:vertical;margin-top:14px}.print-only{display:none}
-@media(max-width:1000px){.layout{grid-template-columns:190px minmax(0,1fr)}.main{padding:20px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.topbar{padding:0 20px}}
-@media(max-width:700px){.topbar{height:auto;min-height:68px;padding:13px 15px}.brand{font-size:13px}.brandmark{width:34px;height:34px}.userbox .username{display:none}.layout{display:block}.sidebar{display:none}.main{padding:17px 12px}.heading{display:block}.heading h1{font-size:22px}.role-pill{display:inline-flex;margin-top:14px}.stats{gap:9px}.stat{padding:13px}.stat strong{font-size:23px}.stat-top{font-size:10px}.stat-icon{width:27px;height:27px}.panelhead{padding:15px}.filters{padding:12px}.filters input,.filters select{width:100%;min-width:0}.detailgrid{grid-template-columns:1fr}.field.full{grid-column:auto}.modalbody{padding:15px}.modalfoot{padding:13px 15px}.modalfoot .btn{flex:1}.actions{min-width:125px}}
-@media print{body{background:#fff}.topbar,.sidebar,.main,.overlay{display:none!important}.print-only{display:block!important;color:#111;font-family:Arial,sans-serif}.print-sheet{width:100%;padding:0}.print-header{display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid #163b63;padding-bottom:15px;margin-bottom:20px}.print-logo{font-size:22px;font-weight:800;color:#163b63;letter-spacing:1px}.print-subtitle{font-size:10px;color:#555;margin-top:4px}.print-title{text-align:right;font-size:17px;font-weight:700}.print-meta{font-size:10px;color:#555;margin-top:5px}.print-section{font-size:11px;font-weight:800;letter-spacing:.7px;background:#edf2f7;padding:8px;margin:16px 0 0;border:1px solid #cbd5e1}.print-grid{display:grid;grid-template-columns:1fr 1fr;border-left:1px solid #cbd5e1;border-top:1px solid #cbd5e1}.print-cell{padding:9px;border-right:1px solid #cbd5e1;border-bottom:1px solid #cbd5e1;min-height:47px;break-inside:avoid}.print-cell.full{grid-column:1/-1}.print-label{font-size:9px;color:#555;text-transform:uppercase;font-weight:700;margin-bottom:6px}.print-value{font-size:11px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.5}.signatures{display:grid;grid-template-columns:repeat(3,1fr);gap:25px;margin-top:42px}.signature{border-top:1px solid #333;text-align:center;padding-top:8px;font-size:10px;min-height:42px}.print-footer{border-top:1px solid #bbb;margin-top:28px;padding-top:8px;display:flex;justify-content:space-between;font-size:9px;color:#555}@page{size:A4 portrait;margin:14mm}}
+:root {
+ --navy:#102b4e;--blue:#1d5fa7;--blue2:#eaf2fc;--bg:#f4f7fb;
+ --text:#1d2939;--muted:#667085;--line:#e4eaf2;--white:#fff;
+ --green:#16804a;--greenbg:#e8f7ef;--red:#b42318;--redbg:#fff0ee;
+ --amber:#946200;--amberbg:#fff5d9;--shadow:0 8px 28px rgba(16,43,78,.07)
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:Inter,Arial,sans-serif;color:var(--text)}
+button,input,select,textarea{font:inherit}
+.app{min-height:100vh}
+.topbar{height:72px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 28px;gap:16px}
+.topbar-left{display:flex;align-items:center;gap:16px;min-width:0}
+.back-button{border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.1);color:#fff;border-radius:9px;padding:9px 13px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
+.back-button:hover{background:rgba(255,255,255,.2)}
+.brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:.4px}
+.brandmark{width:40px;height:40px;border-radius:11px;background:#fff;color:var(--navy);display:grid;place-items:center;font-weight:800}
+.brand small{display:block;font-weight:500;opacity:.75;font-size:11px;letter-spacing:1.3px;margin-top:3px}
+.userbox{display:flex;align-items:center;gap:10px;font-size:13px}
+.avatar{width:34px;height:34px;border-radius:50%;background:#dbeafe;color:var(--navy);display:grid;place-items:center;font-weight:800}
+.layout{display:grid;grid-template-columns:240px minmax(0,1fr);min-height:calc(100vh - 72px)}
+.sidebar{background:#fff;border-right:1px solid var(--line);padding:24px 14px}
+.navlabel{font-size:10px;color:#98a2b3;font-weight:800;letter-spacing:1.3px;padding:0 12px 12px}
+.navitem{padding:12px;border-radius:10px;color:#475467;display:flex;gap:12px;align-items:center;font-size:13px;font-weight:600;margin-bottom:5px}
+.navitem.active{background:var(--blue2);color:var(--blue)}
+.sidebar-note{margin:26px 8px 0;padding:14px;border:1px solid var(--line);border-radius:12px;font-size:11px;color:var(--muted);line-height:1.6}
+.main{padding:28px;min-width:0;max-width:1600px;width:100%;margin:0 auto}
+.heading{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:22px}
+.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:1.4px;color:var(--blue);font-weight:800}
+.heading h1{font-size:26px;margin:7px 0;letter-spacing:-.6px}
+.heading p{margin:0;color:var(--muted);font-size:13px;line-height:1.6}
+.role-pill{background:#eaf2fc;color:var(--blue);padding:9px 13px;border-radius:999px;font-size:12px;font-weight:800;white-space:nowrap}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:22px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:17px;box-shadow:var(--shadow)}
+.stat-top{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px;font-weight:600}
+.stat-icon{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;background:var(--blue2);color:var(--blue)}
+.stat strong{display:block;font-size:27px;margin-top:12px;letter-spacing:-.7px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:15px;box-shadow:var(--shadow);overflow:hidden}
+.panelhead{padding:18px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px}
+.panelhead h2{font-size:15px;margin:0}
+.panelhead p{font-size:12px;color:var(--muted);margin:5px 0 0}
+.filters{padding:16px 20px;display:flex;gap:10px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+.filters input,.filters select{background:#fff;border:1px solid #d0d5dd;border-radius:9px;padding:10px 12px;font-size:12px;color:var(--text);min-height:39px}
+.filters input{flex:1;min-width:190px}
+.filters select{min-width:140px}
+.btn{border:0;border-radius:9px;padding:10px 14px;font-weight:700;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:38px}
+.btn:disabled,.smallbtn:disabled{opacity:.45;cursor:not-allowed}
+.primary{background:var(--blue);color:#fff}
+.secondary{background:#fff;border:1px solid #d0d5dd;color:#344054}
+.approve{background:var(--greenbg);color:var(--green)}
+.reject{background:var(--redbg);color:var(--red)}
+.tablewrap{overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:850px}
+th{background:#fafbfc;color:#667085;text-align:left;text-transform:uppercase;letter-spacing:.6px;font-size:10px;padding:13px 17px;border-bottom:1px solid var(--line)}
+td{padding:15px 17px;border-bottom:1px solid #eef1f5;font-size:12px;vertical-align:middle}
+tbody tr:hover{background:#fbfdff}
+.person{font-weight:700;font-size:12px}
+.sub{display:block;color:var(--muted);font-size:11px;margin-top:4px}
+.status{display:inline-flex;padding:6px 9px;border-radius:999px;font-size:10px;font-weight:800;white-space:nowrap}
+.s-pending{background:var(--amberbg);color:var(--amber)}
+.s-approved{background:var(--greenbg);color:var(--green)}
+.s-rejected{background:var(--redbg);color:var(--red)}
+.s-waiting{background:#eef2f6;color:#475467}
+.actions{display:flex;gap:6px;flex-wrap:wrap}
+.smallbtn{border:1px solid var(--line);background:#fff;border-radius:7px;padding:7px 9px;font-size:11px;font-weight:700;cursor:pointer}
+.empty{padding:42px 20px;text-align:center;color:var(--muted);font-size:13px}
+.notice{padding:12px 15px;border-radius:10px;background:#fff5d9;color:#694b00;font-size:12px;line-height:1.6;margin-bottom:18px;border:1px solid #f4df9c}
+.message{display:none;padding:12px 15px;border-radius:10px;font-size:12px;margin-bottom:15px}
+.message.show{display:block}
+.message.error{background:var(--redbg);color:var(--red)}
+.message.ok{background:var(--greenbg);color:var(--green)}
+.overlay{position:fixed;inset:0;background:rgba(16,24,40,.55);z-index:20;display:none;align-items:center;justify-content:center;padding:18px}
+.overlay.open{display:flex}
+.modal{background:#fff;border-radius:16px;max-width:800px;width:100%;max-height:92vh;overflow:auto;box-shadow:0 24px 80px #0003}
+.modalhead{display:flex;justify-content:space-between;align-items:center;padding:19px 22px;border-bottom:1px solid var(--line);position:sticky;top:0;background:#fff;z-index:1}
+.modalhead h2{margin:0;font-size:17px}
+.x{border:0;background:#f2f4f7;border-radius:8px;width:34px;height:34px;font-size:20px;cursor:pointer}
+.modalbody{padding:22px}
+.detailgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.field{padding:13px;background:#f8fafc;border:1px solid var(--line);border-radius:10px;min-width:0}
+.field.full{grid-column:1/-1}
+.field label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);font-weight:800;margin-bottom:7px}
+.field div{font-size:13px;line-height:1.6;overflow-wrap:anywhere;white-space:pre-wrap}
+.modalfoot{padding:16px 22px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.remarks{width:100%;border:1px solid #d0d5dd;border-radius:9px;padding:11px;min-height:78px;resize:vertical;margin-top:14px}
+.print-only{display:none}
+@media(max-width:1000px){
+ .layout{grid-template-columns:190px minmax(0,1fr)}
+ .main{padding:20px}
+ .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .topbar{padding:0 20px}
+}
+@media(max-width:700px){
+ .topbar{height:auto;min-height:68px;padding:13px 15px}
+ .brand{font-size:13px}
+ .brandmark{width:34px;height:34px}
+ .userbox .username{display:none}
+ .layout{display:block}
+ .sidebar{display:none}
+ .main{padding:17px 12px}
+ .heading{display:block}
+ .heading h1{font-size:22px}
+ .role-pill{display:inline-flex;margin-top:14px}
+ .stats{gap:9px}
+ .stat{padding:13px}
+ .stat strong{font-size:23px}
+ .stat-top{font-size:10px}
+ .stat-icon{width:27px;height:27px}
+ .panelhead{padding:15px}
+ .filters{padding:12px}
+ .filters input,.filters select{width:100%;min-width:0}
+ .detailgrid{grid-template-columns:1fr}
+ .field.full{grid-column:auto}
+ .modalbody{padding:15px}
+ .modalfoot{padding:13px 15px}
+ .modalfoot .btn{flex:1}
+ .actions{min-width:125px}
+}
+@media print{
+ body{background:#fff}
+ .topbar,.sidebar,.main,.overlay{display:none!important}
+ .print-only{display:block!important;color:#111;font-family:Arial,sans-serif}
+ .print-sheet{width:100%;padding:0}
+ .print-header{display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid #163b63;padding-bottom:15px;margin-bottom:20px}
+ .print-logo{font-size:22px;font-weight:800;color:#163b63;letter-spacing:1px}
+ .print-subtitle{font-size:10px;color:#555;margin-top:4px}
+ .print-title{text-align:right;font-size:17px;font-weight:700}
+ .print-meta{font-size:10px;color:#555;margin-top:5px}
+ .print-section{font-size:11px;font-weight:800;letter-spacing:.7px;background:#edf2f7;padding:8px;margin:16px 0 0;border:1px solid #cbd5e1}
+ .print-grid{display:grid;grid-template-columns:1fr 1fr;border-left:1px solid #cbd5e1;border-top:1px solid #cbd5e1}
+ .print-cell{padding:9px;border-right:1px solid #cbd5e1;border-bottom:1px solid #cbd5e1;min-height:47px;break-inside:avoid}
+ .print-cell.full{grid-column:1/-1}
+ .print-label{font-size:9px;color:#555;text-transform:uppercase;font-weight:700;margin-bottom:6px}
+ .print-value{font-size:11px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.5}
+ .signatures{display:grid;grid-template-columns:repeat(3,1fr);gap:25px;margin-top:42px}
+ .signature{border-top:1px solid #333;text-align:center;padding-top:8px;font-size:10px;min-height:42px}
+ .print-footer{border-top:1px solid #bbb;margin-top:28px;padding-top:8px;display:flex;justify-content:space-between;font-size:9px;color:#555}
+ @page{size:A4 portrait;margin:14mm}
+}
 </style>
 </head>
+
 <body>
 <div class="app">
+
 <header class="topbar">
-  <div class="topbar-left"><button type="button" class="back-button" id="backButton">← Back</button><div class="brand"><div class="brandmark">IF</div><div>INTERFREIGHT<small>INCIDENT REPORT PORTAL</small></div></div></div>
-  <div class="userbox"><div class="avatar" id="avatar">U</div><div class="username"><strong id="userName">Portal User</strong><div id="userRole" style="opacity:.75;margin-top:3px">Approval Portal</div></div></div>
+ <div class="topbar-left">
+  <button type="button" class="back-button" id="backButton">← Back</button>
+  <div class="brand">
+   <div class="brandmark">IF</div>
+   <div>INTERFREIGHT<small>INCIDENT REPORT PORTAL</small></div>
+  </div>
+ </div>
+ <div class="userbox">
+  <div class="avatar" id="avatar">U</div>
+  <div class="username">
+   <strong id="userName">Portal User</strong>
+   <div id="userRole" style="opacity:.75;margin-top:3px">Approval Portal</div>
+  </div>
+ </div>
 </header>
+
 <div class="layout">
-  <aside class="sidebar">
-    <div class="navlabel">WORKSPACE</div>
-    <div class="navitem active">▦ &nbsp; Incident Approvals</div>
-    <div class="sidebar-note"><strong>Approval sequence</strong><br>Employee submission → Manager approval → One shared HR or Office Admin approval.</div>
-  </aside>
-  <main class="main">
-    <div class="heading"><div><div class="eyebrow">Operations / Compliance</div><h1>Incident Report Approvals</h1><p>Review manager-approved incidents, record your decision, and print approved reports.</p></div><div class="role-pill" id="rolePill">Checking role…</div></div>
-   <div class="notice" id="roleNotice" style="display:none;"></div>
-    <section class="stats">
-      <div class="stat"><div class="stat-top">Awaiting my review <span class="stat-icon">◷</span></div><strong id="statPending">—</strong></div>
-      <div class="stat"><div class="stat-top">Approved by me <span class="stat-icon">✓</span></div><strong id="statApproved">—</strong></div>
-      <div class="stat"><div class="stat-top">Rejected by me <span class="stat-icon">×</span></div><strong id="statRejected">—</strong></div>
-      <div class="stat"><div class="stat-top">Fully approved <span class="stat-icon">▣</span></div><strong id="statFinal">—</strong></div>
-    </section>
-    <section class="panel">
-      <div class="panelhead"><div><h2>Incident report register</h2><p id="listSubtitle">Manager-approved reports, including pending, rejected, and fully approved records.</p></div><button class="btn secondary" id="refreshBtn">↻ Refresh</button></div>
-      <div class="filters"><input id="searchInput" placeholder="Search employee, report ID, location…"><select id="statusFilter"><option value="all">All statuses</option><option value="pending">Awaiting my review</option><option value="approved">Approved by me</option><option value="rejected">Rejected by me</option><option value="final">Fully approved</option></select><select id="departmentFilter"><option value="all">All departments</option></select></div>
-      <div class="tablewrap"><table><thead><tr><th>Report</th><th>Employee / Department</th><th>Incident date</th><th>Location</th><th>Manager status</th><th>HR / Admin decision</th><th>Action</th></tr></thead><tbody id="reportRows"><tr><td colspan="7" class="empty">Loading incident reports…</td></tr></tbody></table></div>
-    </section>
-  </main>
+ <aside class="sidebar">
+  <div class="navlabel">WORKSPACE</div>
+  <div class="navitem active">▦ &nbsp; Incident Approvals</div>
+  <div class="sidebar-note">
+   <strong>Approval sequence</strong><br>
+   Employee submission → Manager approval → One shared HR or Office Admin approval.
+  </div>
+ </aside>
+
+ <main class="main">
+  <div class="heading">
+   <div>
+    <div class="eyebrow">Operations / Compliance</div>
+    <h1>Incident Report Approvals</h1>
+    <p>Review manager-approved incidents, record your decision, and print approved reports.</p>
+   </div>
+   <div class="role-pill" id="rolePill">Checking role…</div>
+  </div>
+
+  <div class="notice" id="roleNotice" style="display:none"></div>
+  <div class="message" id="message"></div>
+
+  <section class="stats">
+   <div class="stat"><div class="stat-top">Awaiting my review <span class="stat-icon">◷</span></div><strong id="statPending">—</strong></div>
+   <div class="stat"><div class="stat-top">Approved by me <span class="stat-icon">✓</span></div><strong id="statApproved">—</strong></div>
+   <div class="stat"><div class="stat-top">Rejected by me <span class="stat-icon">×</span></div><strong id="statRejected">—</strong></div>
+   <div class="stat"><div class="stat-top">Fully approved <span class="stat-icon">▣</span></div><strong id="statFinal">—</strong></div>
+  </section>
+
+  <section class="panel">
+   <div class="panelhead">
+    <div>
+     <h2>Incident report register</h2>
+     <p id="listSubtitle">Manager-approved reports.</p>
+    </div>
+    <button class="btn secondary" id="refreshBtn">↻ Refresh</button>
+   </div>
+
+   <div class="filters">
+    <input id="searchInput" placeholder="Search employee, report ID, location…">
+    <select id="statusFilter">
+     <option value="all">All statuses</option>
+     <option value="pending">Awaiting my review</option>
+     <option value="approved">Approved by me</option>
+     <option value="rejected">Rejected by me</option>
+     <option value="final">Fully approved</option>
+    </select>
+    <select id="departmentFilter">
+     <option value="all">All departments</option>
+    </select>
+   </div>
+
+   <div class="tablewrap">
+    <table>
+     <thead>
+      <tr>
+       <th>Report</th>
+       <th>Employee / Department</th>
+       <th>Incident date</th>
+       <th>Location</th>
+       <th>Manager status</th>
+       <th>HR / Admin decision</th>
+       <th>Action</th>
+      </tr>
+     </thead>
+     <tbody id="reportRows">
+      <tr><td colspan="7" class="empty">Loading incident reports…</td></tr>
+     </tbody>
+    </table>
+   </div>
+  </section>
+ </main>
 </div>
 </div>
+
 <div class="overlay" id="detailOverlay" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
- <div class="modal"><div class="modalhead"><h2 id="detailTitle">Incident report details</h2><button class="x" id="closeModal" aria-label="Close">×</button></div><div class="modalbody"><div class="detailgrid" id="detailGrid"></div><label for="remarks" style="display:block;font-size:12px;font-weight:700;margin-top:18px">Approval remarks (required when rejecting)</label><textarea class="remarks" id="remarks" placeholder="Add review notes or reason for rejection…"></textarea><div id="attachmentArea" style="margin-top:12px;font-size:12px"></div></div><div class="modalfoot"><button class="btn secondary" id="printBtn">▣ Print report</button><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn reject" id="rejectBtn">Reject</button><button class="btn approve" id="approveBtn">Approve</button></div></div></div>
+ <div class="modal">
+  <div class="modalhead">
+   <h2 id="detailTitle">Incident report details</h2>
+   <button class="x" id="closeModal" aria-label="Close">×</button>
+  </div>
+
+  <div class="modalbody">
+   <div class="detailgrid" id="detailGrid"></div>
+   <label for="remarks" style="display:block;font-size:12px;font-weight:700;margin-top:18px">
+    Approval remarks (required when rejecting)
+   </label>
+   <textarea class="remarks" id="remarks" placeholder="Add review notes or reason for rejection…"></textarea>
+   <div id="attachmentArea" style="margin-top:12px;font-size:12px"></div>
+  </div>
+
+  <div class="modalfoot">
+   <button class="btn secondary" id="printBtn" disabled>▣ Print report</button>
+   <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <button class="btn reject" id="rejectBtn">Reject</button>
+    <button class="btn approve" id="approveBtn">Approve</button>
+   </div>
+  </div>
+ </div>
 </div>
+
 <div class="print-only" id="printArea"></div>
+
 <script>
 (() => {
-  "use strict";
-  const SUPABASE_URL = "https://tuihpvykuqbqnfyfepql.supabase.co";
-  // Use your project's public anon/publishable key here. Never put a service-role key in browser code.
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR1aWhwdnlrdXFicW5meWZlcHFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3Mjg4OTcsImV4cCI6MjA5NzMwNDg5N30.HZKS8CgFLjkZ-Bx2AIjFjurH3IsKjvf37Ft852CzJsQ";
-  const TABLE = "incident_reports";
-  const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  const $ = id => document.getElementById(id);
-  let currentUser = null, currentRole = "", reports = [], selectedReport = null, busy = false;
+"use strict";
 
-  function getUser() {
-    try { return JSON.parse(localStorage.getItem("currentUser") || "null"); }
-    catch (e) { console.error("Could not read currentUser session", e); return null; }
-  }
- 
+/* =========================================
+   SUPABASE CONFIGURATION
+========================================= */
+
+const SUPABASE_URL = "https://tuihpvykuqbqnfyfepql.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ1aWQiLCJyZWYiOiJ0dWlocHZ5a3VxYnFucWZ5ZmVwcWwiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc4MTcyODg5NywiZXhwIjoyMDk3MzA0ODk3fQ.HZKS8CgFLjkZ-Bx2AIjFjurH3IsKjvf37Ft852CzJsQ";
+
+const TABLE = "incident_reports";
+
+const client = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+);
+
+const $ = id => document.getElementById(id);
+
+let currentUser = null;
+let currentRole = "";
+let reports = [];
+let selectedReport = null;
+let busy = false;
+
+/* =========================================
+   USER AND ROLE
+========================================= */
+
+function getUser() {
+    try {
+        return JSON.parse(localStorage.getItem("currentUser") || "null");
+    } catch (error) {
+        console.error("Could not read user session:", error);
+        return null;
+    }
+}
+
 function roleOf(user) {
     const role = String(user?.role || "").trim().toLowerCase();
 
@@ -88,97 +338,157 @@ function roleOf(user) {
     return "";
 }
 
+function initRole() {
+    currentUser = getUser();
+    currentRole = roleOf(currentUser);
+
+    const name =
+        currentUser?.full_name ||
+        currentUser?.username ||
+        currentUser?.name ||
+        "Portal User";
+
+    $("userName").textContent = name;
+    $("avatar").textContent = name.trim().charAt(0).toUpperCase() || "U";
+    $("userRole").textContent = currentUser?.role || "Unrecognized role";
+
+    $("rolePill").textContent =
+        currentRole === "hr"
+            ? "HR APPROVAL"
+            : currentRole === "admin"
+                ? "OFFICE ADMIN APPROVAL"
+                : "ACCESS NOT CONFIGURED";
+
+    if (!currentUser || !currentRole) {
+        showMessage(
+            "Access not configured. Please sign in using an HR or Office Admin account.",
+            "error"
+        );
+
+        $("reportRows").innerHTML =
+            '<tr><td colspan="7" class="empty">No recognized HR or Office Admin session. Please sign in through your portal.</td></tr>';
+
+        return false;
+    }
+
+    return true;
+}
+
+/* =========================================
+   APPROVAL STATUS FUNCTIONS
+   HR AND ADMIN SHARE ONE APPROVAL STAGE
+========================================= */
+
 function isHR() {
     return currentRole === "hr";
 }
 
-function awaiting(r) {
+function isApproved(value) {
+    return String(value || "").trim().toLowerCase() === "approved";
+}
+
+function isRejected(value) {
+    return String(value || "").trim().toLowerCase() === "rejected";
+}
+
+function awaiting(report) {
     return (
-        String(r.manager_status || "").toLowerCase() === "approved" &&
-        String(r.hr_status || "").toLowerCase() === "waiting"
+        isApproved(report.manager_status) &&
+        String(report.hr_status || "").trim().toLowerCase() === "waiting"
     );
 }
 
-function myDecision(r) {
-    return r.hr_status;
+function myDecision(report) {
+    return report.hr_status;
 }
 
-  function esc(value) {
-    return String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-  }
-  function dateText(value) {
+function fullyApproved(report) {
+    return (
+        isApproved(report.manager_status) &&
+        isApproved(report.hr_status)
+    );
+}
+
+/* =========================================
+   GENERAL HELPERS
+========================================= */
+
+function esc(value) {
+    return String(value ?? "").replace(/[&<>"']/g, character => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    }[character]));
+}
+
+function dateText(value) {
     if (!value) return "—";
-    const d = new Date(value + (String(value).length === 10 ? "T00:00:00" : ""));
-    return Number.isNaN(d.getTime()) ? String(value) : d.toLocaleDateString("en-PH",{year:"numeric",month:"short",day:"numeric"});
-  }
-  function statusText(v) { return String(v || "Waiting").replace(/_/g," ").replace(/\b\w/g, c => c.toUpperCase()); }
-  function statusClass(v) {
-    const s = String(v || "").toLowerCase();
-    return s.includes("approv") ? "s-approved" : s.includes("reject") ? "s-rejected" : s.includes("pending") ? "s-pending" : "s-waiting";
-  }
-  function statusBadge(v) { return `<span class="status ${statusClass(v)}">${esc(statusText(v))}</span>`; }
- 
-function showMessage(text, type = "ok") {
-    const el = $("message");
 
-    if (!el) {
-        console.warn("Message element #message was not found:", text);
-        return;
-    }
+    const date = new Date(
+        String(value).length === 10 ? value + "T00:00:00" : value
+    );
 
-    el.textContent = text;
-    el.className = `message show ${type}`;
+    return Number.isNaN(date.getTime())
+        ? String(value)
+        : date.toLocaleDateString("en-PH", {
+            year: "numeric",
+            month: "short",
+            day: "numeric"
+        });
 }
 
+function statusText(value) {
+    return String(value || "Waiting")
+        .replace(/_/g, " ")
+        .replace(/\b\w/g, character => character.toUpperCase());
+}
+
+function statusClass(value) {
+    const status = String(value || "").toLowerCase();
+
+    if (status.includes("approv")) return "s-approved";
+    if (status.includes("reject")) return "s-rejected";
+    if (status.includes("pending")) return "s-pending";
+
+    return "s-waiting";
+}
+
+function statusBadge(value) {
+    return `<span class="status ${statusClass(value)}">${esc(statusText(value))}</span>`;
+}
+
+function showMessage(message, type = "ok") {
+    const element = $("message");
+
+    element.textContent = message;
+    element.className = `message show ${type}`;
+
+    element.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest"
+    });
+}
 
 function clearMessage() {
-    const el = $("message");
+    const element = $("message");
 
-    if (!el) return;
-
-    el.className = "message";
-    el.textContent = "";
+    element.textContent = "";
+    element.className = "message";
 }
 
-  function isHR(){return currentRole==="hr";}
-  function awaiting(r){return isHR() ? !isRejected(r.hr_status) && !isApproved(r.hr_status) : isApproved(r.hr_status) && !isRejected(r.admin_status) && !isApproved(r.admin_status);}
-  function isApproved(v){return String(v||"").toLowerCase()==="approved";}
-  function isRejected(v){return String(v||"").toLowerCase()==="rejected";}
-  function fullyApproved(r){return isApproved(r.manager_status)&&isApproved(r.hr_status);}
-  function myDecision(r){return r.hr_status;}
-  function initRole(){
-    currentUser=getUser(); currentRole=roleOf(currentUser);
-    const name=currentUser?.full_name || currentUser?.username || currentUser?.name || "Portal User";
-    $("userName").textContent=name; $("avatar").textContent=String(name).trim().charAt(0).toUpperCase()||"U";
-    $("userRole").textContent=currentUser?.role || "Unrecognized role";
-    $("rolePill").textContent=currentRole==="hr"?"HR APPROVAL":currentRole==="admin"?"OFFICE ADMIN APPROVAL":"ACCESS NOT CONFIGURED";
-    $("listSubtitle").textContent=currentRole==="hr"?"Manager-approved reports, including pending, rejected, and fully approved records.":"Manager-approved reports, including pending, rejected, and fully approved records.";
-    if(!currentUser || !currentRole){
-      showMessage("Access not configured: sign in with an account whose currentUser.role is HR or Admin. Update roleOf() if your application uses different role names.","error");
-      $("reportRows").innerHTML='<tr><td colspan="7" class="empty">No recognized HR or Office Admin session. Please sign in through your existing portal.</td></tr>';
-      return false;
-    }
-    return true;
-  }
+/* =========================================
+   LOAD REPORTS
+========================================= */
 
 async function loadReports() {
-    clearMessage();
-
     if (!currentUser || !currentRole) return;
 
+    clearMessage();
+
     $("reportRows").innerHTML =
-        '<tr><td colspan="7" class="empty">Loading…</td></tr>';
-
-    if (SUPABASE_ANON_KEY === "PASTE_YOUR_SUPABASE_ANON_KEY_HERE") {
-        $("reportRows").innerHTML =
-            '<tr><td colspan="7" class="empty">Add your Supabase anon/publishable key in the code before loading records.</td></tr>';
-
-        showMessage(
-            "Set SUPABASE_ANON_KEY near the top of the script. Do not use a service-role key.",
-            "error"
-        );
-        return;
-    }
+        '<tr><td colspan="7" class="empty">Loading incident reports…</td></tr>';
 
     try {
         const { data, error } = await client
@@ -195,71 +505,263 @@ async function loadReports() {
         renderRows();
         updateStats();
 
-    } catch (e) {
-        console.error("Load incident reports failed:", e);
+    } catch (error) {
+        console.error("Load reports error:", error);
 
         $("reportRows").innerHTML =
-            '<tr><td colspan="7" class="empty">Could not load reports. Check the Supabase columns, RLS policies, and browser console.</td></tr>';
+            '<tr><td colspan="7" class="empty">Unable to load incident reports.</td></tr>';
 
         showMessage(
-            "Supabase error: " + (e.message || "Unable to load reports"),
+            "Supabase loading error: " + (error.message || "Unknown error"),
             "error"
         );
     }
 }
 
-  function fillDepartments(){
-    const select=$("departmentFilter"), old=select.value;
-    const depts=[...new Set(reports.map(r=>r.department).filter(Boolean))].sort();
-    select.innerHTML='<option value="all">All departments</option>'+depts.map(d=>`<option value="${esc(d)}">${esc(d)}</option>`).join("");
-    if(depts.includes(old))select.value=old;
-  }
-  function renderRows(){
-    const search=$("searchInput").value.trim().toLowerCase(), filter=$("statusFilter").value, dept=$("departmentFilter").value;
-    const visible=reports.filter(r=>{
-      const hay=[r.id,r.employee_id,r.employee_name,r.department,r.incident_location,r.description].join(" ").toLowerCase();
-      if(search&&!hay.includes(search))return false;
-      if(dept!=="all"&&r.department!==dept)return false;
-      if(filter==="pending"&&!awaiting(r))return false;
-      if(filter==="approved"&&!isApproved(myDecision(r)))return false;
-      if(filter==="rejected"&&!isRejected(myDecision(r)))return false;
-      if(filter==="final"&&!fullyApproved(r))return false;
-      return true;
+/* =========================================
+   DEPARTMENT FILTER
+========================================= */
+
+function fillDepartments() {
+    const select = $("departmentFilter");
+    const oldValue = select.value;
+
+    const departments = [
+        ...new Set(reports.map(report => report.department).filter(Boolean))
+    ].sort();
+
+    select.innerHTML =
+        '<option value="all">All departments</option>' +
+        departments.map(department =>
+            `<option value="${esc(department)}">${esc(department)}</option>`
+        ).join("");
+
+    if (departments.includes(oldValue)) {
+        select.value = oldValue;
+    }
+}
+
+/* =========================================
+   RENDER REPORT TABLE
+========================================= */
+
+function renderRows() {
+    const search = $("searchInput").value.trim().toLowerCase();
+    const filter = $("statusFilter").value;
+    const department = $("departmentFilter").value;
+
+    const visible = reports.filter(report => {
+        const searchable = [
+            report.id,
+            report.employee_id,
+            report.employee_name,
+            report.department,
+            report.incident_location,
+            report.description
+        ].join(" ").toLowerCase();
+
+        if (search && !searchable.includes(search)) return false;
+
+        if (
+            department !== "all" &&
+            report.department !== department
+        ) return false;
+
+        if (filter === "pending" && !awaiting(report)) return false;
+
+        if (
+            filter === "approved" &&
+            !isApproved(myDecision(report))
+        ) return false;
+
+        if (
+            filter === "rejected" &&
+            !isRejected(myDecision(report))
+        ) return false;
+
+        if (
+            filter === "final" &&
+            !fullyApproved(report)
+        ) return false;
+
+        return true;
     });
-    if(!visible.length){$("reportRows").innerHTML='<tr><td colspan="7" class="empty">No incident reports match this view.</td></tr>';return;}
-    $("reportRows").innerHTML=visible.map(r=>`<tr>
-      <td><span class="person">IR-${esc(r.id ?? "—")}</span><span class="sub">Submitted ${esc(dateText(r.report_date||r.created_at))}</span></td>
-      <td><span class="person">${esc(r.employee_name||"Unknown employee")}</span><span class="sub">${esc(r.employee_id||"No employee ID")} · ${esc(r.department||"No department")}</span></td>
-      <td>${esc(dateText(r.incident_date))}</td><td>${esc(r.incident_location||"—")}</td>
-      <td>${statusBadge(r.manager_status)}</td><td>${statusBadge(r.hr_status)}</td>
-      <td><div class="actions"><button class="smallbtn" data-view="${esc(r.id)}">View / Review</button><button class="smallbtn" data-print="${esc(r.id)}">Print</button></div></td>
-    </tr>`).join("");
-    document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>openReport(b.dataset.view)));
-    document.querySelectorAll("[data-print]").forEach(b=>b.addEventListener("click",()=>{const r=reports.find(x=>String(x.id)===b.dataset.print);if(r){selectedReport=r;printReport(r);}}));
-  }
-  function updateStats(){
-    $("statPending").textContent=reports.filter(awaiting).length;
-    $("statApproved").textContent=reports.filter(r=>isApproved(myDecision(r))).length;
-    $("statRejected").textContent=reports.filter(r=>isRejected(myDecision(r))).length;
-    $("statFinal").textContent=reports.filter(fullyApproved).length;
-  }
-  function field(label,value,full=false){return `<div class="field ${full?"full":""}"><label>${esc(label)}</label><div>${esc(value||"—")}</div></div>`;}
-  function openReport(id){
-    selectedReport=reports.find(r=>String(r.id)===String(id)); if(!selectedReport)return;
-    const r=selectedReport;
-    $("detailTitle").textContent=`Incident Report IR-${r.id}`;
-    $("detailGrid").innerHTML=field("Employee name",r.employee_name)+field("Employee ID",r.employee_id)+field("Department",r.department)+field("Report date",dateText(r.report_date||r.created_at))+field("Incident date",dateText(r.incident_date))+field("Incident location",r.incident_location)+field("Individuals involved",r.individuals_involved)+field("Manager status",statusText(r.manager_status))+field("Shared HR / Office Admin decision",statusText(r.hr_status))+field("Decision made by",r.approval_by)+field("Approver role",r.approval_role)+field("Decision date",r.approval_at?new Date(r.approval_at).toLocaleString("en-PH"):"—")+field("Approval remarks",r.approval_remarks,true)+field("Incident description",r.description,true);
-    $("remarks").value="";
-    const attachment=$("attachmentArea");
-    attachment.innerHTML=r.attachment_path?`Attachment path: <code>${esc(r.attachment_path)}</code><br><small>Open/download attachments through a protected Supabase Storage URL; a stored path is not necessarily a public URL.</small>`:"No attachment provided.";
-    const canReview=awaiting(r);
-    $("approveBtn").style.display=canReview?"inline-flex":"none"; $("rejectBtn").style.display=canReview?"inline-flex":"none";
+
+    if (!visible.length) {
+        $("reportRows").innerHTML =
+            '<tr><td colspan="7" class="empty">No incident reports match this view.</td></tr>';
+        return;
+    }
+
+    $("reportRows").innerHTML = visible.map(report => {
+        const canPrint = fullyApproved(report);
+
+        return `
+        <tr>
+            <td>
+                <span class="person">IR-${esc(report.id ?? "—")}</span>
+                <span class="sub">Submitted ${esc(dateText(report.report_date || report.created_at))}</span>
+            </td>
+
+            <td>
+                <span class="person">${esc(report.employee_name || "Unknown employee")}</span>
+                <span class="sub">${esc(report.employee_id || "No employee ID")} · ${esc(report.department || "No department")}</span>
+            </td>
+
+            <td>${esc(dateText(report.incident_date))}</td>
+
+            <td>${esc(report.incident_location || "—")}</td>
+
+            <td>${statusBadge(report.manager_status)}</td>
+
+            <td>${statusBadge(report.hr_status)}</td>
+
+            <td>
+                <div class="actions">
+                    <button class="smallbtn" data-view="${esc(report.id)}">
+                        View / Review
+                    </button>
+
+                    <button
+                        class="smallbtn"
+                        data-print="${esc(report.id)}"
+                        ${canPrint ? "" : "disabled"}
+                        title="${canPrint ? "Print approved report" : "Available after HR/Admin approval"}"
+                    >
+                        Print
+                    </button>
+                </div>
+            </td>
+        </tr>`;
+    }).join("");
+
+    document.querySelectorAll("[data-view]").forEach(button => {
+        button.addEventListener("click", () => {
+            openReport(button.dataset.view);
+        });
+    });
+
+    document.querySelectorAll("[data-print]").forEach(button => {
+        button.addEventListener("click", () => {
+            const report = reports.find(
+                item => String(item.id) === button.dataset.print
+            );
+
+            if (report && fullyApproved(report)) {
+                selectedReport = report;
+                printReport(report);
+            }
+        });
+    });
+}
+
+/* =========================================
+   DASHBOARD STATISTICS
+========================================= */
+
+function updateStats() {
+    $("statPending").textContent =
+        reports.filter(awaiting).length;
+
+    $("statApproved").textContent =
+        reports.filter(report => isApproved(myDecision(report))).length;
+
+    $("statRejected").textContent =
+        reports.filter(report => isRejected(myDecision(report))).length;
+
+    $("statFinal").textContent =
+        reports.filter(fullyApproved).length;
+}
+
+/* =========================================
+   REPORT DETAILS
+========================================= */
+
+function field(label, value, full = false) {
+    return `
+        <div class="field ${full ? "full" : ""}">
+            <label>${esc(label)}</label>
+            <div>${esc(value || "—")}</div>
+        </div>
+    `;
+}
+
+function openReport(id) {
+    selectedReport = reports.find(
+        report => String(report.id) === String(id)
+    );
+
+    if (!selectedReport) return;
+
+    const report = selectedReport;
+
+    $("detailTitle").textContent =
+        `Incident Report IR-${report.id}`;
+
+    $("detailGrid").innerHTML =
+        field("Employee name", report.employee_name) +
+        field("Employee ID", report.employee_id) +
+        field("Department", report.department) +
+        field("Report date", dateText(report.report_date || report.created_at)) +
+        field("Incident date", dateText(report.incident_date)) +
+        field("Incident location", report.incident_location) +
+        field("Individuals involved", report.individuals_involved) +
+        field("Manager status", statusText(report.manager_status)) +
+        field("Shared HR / Office Admin decision", statusText(report.hr_status)) +
+        field("Decision made by", report.approval_by) +
+        field("Approver role", report.approval_role) +
+        field(
+            "Decision date",
+            report.approval_at
+                ? new Date(report.approval_at).toLocaleString("en-PH")
+                : "—"
+        ) +
+        field("Approval remarks", report.approval_remarks, true) +
+        field("Incident description", report.description, true);
+
+    $("remarks").value = "";
+
+    $("attachmentArea").innerHTML = report.attachment_path
+        ? `Attachment path: <code>${esc(report.attachment_path)}</code><br>
+           <small>Open or download the attachment using its protected Supabase Storage URL.</small>`
+        : "No attachment provided.";
+
+    const canReview = awaiting(report);
+    const canPrint = fullyApproved(report);
+
+    $("approveBtn").style.display =
+        canReview ? "inline-flex" : "none";
+
+    $("rejectBtn").style.display =
+        canReview ? "inline-flex" : "none";
+
+    $("approveBtn").disabled = false;
+    $("rejectBtn").disabled = false;
+
+    $("printBtn").disabled = !canPrint;
+
+    $("printBtn").title = canPrint
+        ? "Print fully approved incident report"
+        : "Printing is available after HR/Admin approval.";
+
     $("detailOverlay").classList.add("open");
-  }
-  function closeModal(){$("detailOverlay").classList.remove("open");}
- 
+}
+
+function closeModal() {
+    $("detailOverlay").classList.remove("open");
+}
+
+/* =========================================
+   APPROVE OR REJECT REPORT
+========================================= */
+
 async function decide(decision) {
     if (!selectedReport || busy) return;
+
+    if (!["Approved", "Rejected"].includes(decision)) {
+        showMessage("Invalid approval decision.", "error");
+        return;
+    }
 
     const remark = $("remarks").value.trim();
 
@@ -273,20 +775,24 @@ async function decide(decision) {
 
     if (!awaiting(selectedReport)) {
         showMessage(
-            "This report has already been processed or is no longer waiting for review. Refresh the list.",
+            "This report has already been processed. Please refresh the list.",
             "error"
         );
+
         await loadReports();
         return;
     }
 
-    const confirmText = decision === "Approved"
-        ? "Approve this incident report for the shared HR/Admin review?"
-        : "Reject this incident report?";
+    const confirmed = confirm(
+        decision === "Approved"
+            ? "Are you sure you want to approve this incident report?"
+            : "Are you sure you want to reject this incident report?"
+    );
 
-    if (!confirm(confirmText)) return;
+    if (!confirmed) return;
 
     busy = true;
+
     $("approveBtn").disabled = true;
     $("rejectBtn").disabled = true;
 
@@ -300,8 +806,9 @@ async function decide(decision) {
                 currentUser.full_name ||
                 currentUser.username ||
                 String(currentUser.id || ""),
-            approval_role: currentRole === "hr" ? "HR" : "Office Admin",
-            approval_at: now
+            approval_role: isHR() ? "HR" : "Office Admin",
+            approval_at: now,
+            updated_at: now
         };
 
         const { data, error } = await client
@@ -316,7 +823,7 @@ async function decide(decision) {
 
         if (!data || data.length === 0) {
             throw new Error(
-                "No record was updated. Another reviewer may have already decided, or Supabase permissions prevented the update."
+                "No record was updated. Check the report status and Supabase UPDATE permissions."
             );
         }
 
@@ -324,22 +831,20 @@ async function decide(decision) {
 
         closeModal();
 
+        await loadReports();
+
         showMessage(
-            `Report IR-${reportId} marked ${decision.toLowerCase()}.`,
+            `Incident Report IR-${reportId} successfully ${decision.toLowerCase()}.`,
             "ok"
         );
 
-        await loadReports();
-
-    } catch (e) {
-        console.error("Approval update failed:", e);
+    } catch (error) {
+        console.error("Approval update failed:", error);
 
         showMessage(
-            "Could not save decision: " + (e.message || "Unknown error"),
+            "Could not save decision: " + (error.message || "Unknown error"),
             "error"
         );
-
-        await loadReports();
 
     } finally {
         busy = false;
@@ -348,26 +853,94 @@ async function decide(decision) {
     }
 }
 
-  function printReport(r){
-    const cell=(label,value,full=false)=>`<div class="print-cell ${full?"full":""}"><div class="print-label">${esc(label)}</div><div class="print-value">${esc(value||"—")}</div></div>`;
-    $("printArea").innerHTML=`<div class="print-sheet">
-      <div class="print-header"><div><div class="print-logo">INTERFREIGHT</div><div class="print-subtitle">INCIDENT REPORT · INTERNAL DOCUMENT</div></div><div><div class="print-title">INCIDENT REPORT</div><div class="print-meta">Reference: IR-${esc(r.id)}<br>Printed: ${esc(new Date().toLocaleDateString("en-PH"))}</div></div></div>
-      <div class="print-section">EMPLOYEE AND REPORT INFORMATION</div><div class="print-grid">
-      ${cell("Employee name",r.employee_name)}${cell("Employee ID",r.employee_id)}
-      ${cell("Department",r.department)}${cell("Report date",dateText(r.report_date||r.created_at))}
-      ${cell("Incident date",dateText(r.incident_date))}${cell("Incident location",r.incident_location)}
-      ${cell("Individuals involved",r.individuals_involved,true)}${cell("Incident description",r.description,true)}</div>
-      <div class="print-section">REVIEW AND APPROVAL RECORD</div><div class="print-grid">
-      ${cell("Manager status",statusText(r.manager_status))}${cell("Manager remarks",r.manager_comments)}
-      ${cell("Shared HR / Office Admin decision",statusText(r.hr_status))}${cell("Approval remarks",r.approval_remarks)}
-      ${cell("Decision made by",r.approval_by)}${cell("Approver role",r.approval_role)}
-      ${cell("Decision date",r.approval_at?new Date(r.approval_at).toLocaleString("en-PH"):"—")}${cell("Final approval status",fullyApproved(r)?"Fully Approved":"Not fully approved")}</div>
-      <div class="signatures"><div class="signature">Reporting Employee</div><div class="signature">HR Reviewer</div><div class="signature">Office Admin — Final Approval</div></div>
-      <div class="print-footer"><span>INTERFREIGHT · Confidential internal record</span><span>IR-${esc(r.id)}</span></div>
-      </div>`;
+/* =========================================
+   PRINT APPROVED REPORT
+========================================= */
+
+function printReport(report) {
+    if (!report || !fullyApproved(report)) {
+        showMessage(
+            "This report cannot be printed until both the Manager and HR/Admin have approved it.",
+            "error"
+        );
+        return;
+    }
+
+    const cell = (label, value, full = false) => `
+        <div class="print-cell ${full ? "full" : ""}">
+            <div class="print-label">${esc(label)}</div>
+            <div class="print-value">${esc(value || "—")}</div>
+        </div>
+    `;
+
+    $("printArea").innerHTML = `
+    <div class="print-sheet">
+
+        <div class="print-header">
+            <div>
+                <div class="print-logo">INTERFREIGHT</div>
+                <div class="print-subtitle">INCIDENT REPORT · INTERNAL DOCUMENT</div>
+            </div>
+
+            <div>
+                <div class="print-title">INCIDENT REPORT</div>
+                <div class="print-meta">
+                    Reference: IR-${esc(report.id)}<br>
+                    Printed: ${esc(new Date().toLocaleDateString("en-PH"))}
+                </div>
+            </div>
+        </div>
+
+        <div class="print-section">EMPLOYEE AND REPORT INFORMATION</div>
+
+        <div class="print-grid">
+            ${cell("Employee name", report.employee_name)}
+            ${cell("Employee ID", report.employee_id)}
+            ${cell("Department", report.department)}
+            ${cell("Report date", dateText(report.report_date || report.created_at))}
+            ${cell("Incident date", dateText(report.incident_date))}
+            ${cell("Incident location", report.incident_location)}
+            ${cell("Individuals involved", report.individuals_involved, true)}
+            ${cell("Incident description", report.description, true)}
+        </div>
+
+        <div class="print-section">REVIEW AND APPROVAL RECORD</div>
+
+        <div class="print-grid">
+            ${cell("Manager status", statusText(report.manager_status))}
+            ${cell("Manager remarks", report.manager_comments)}
+            ${cell("HR / Office Admin decision", statusText(report.hr_status))}
+            ${cell("Approval remarks", report.approval_remarks)}
+            ${cell("Decision made by", report.approval_by)}
+            ${cell("Approver role", report.approval_role)}
+            ${cell(
+                "Decision date",
+                report.approval_at
+                    ? new Date(report.approval_at).toLocaleString("en-PH")
+                    : "—"
+            )}
+            ${cell("Final approval status", "FULLY APPROVED")}
+        </div>
+
+        <div class="signatures">
+            <div class="signature">Reporting Employee</div>
+            <div class="signature">Department Manager</div>
+            <div class="signature">HR / Office Admin Reviewer</div>
+        </div>
+
+        <div class="print-footer">
+            <span>INTERFREIGHT · Confidential internal record</span>
+            <span>IR-${esc(report.id)}</span>
+        </div>
+
+    </div>`;
+
     window.print();
-  }
-  $("reportRows").addEventListener("click",e=>{});
+}
+
+/* =========================================
+   BACK BUTTON
+========================================= */
 
 $("backButton").addEventListener("click", () => {
     const user = getUser();
@@ -399,17 +972,50 @@ $("backButton").addEventListener("click", () => {
     alert("Contact IT administrator.");
 });
 
-  $("refreshBtn").addEventListener("click",loadReports);
-  $("searchInput").addEventListener("input",renderRows);
-  $("statusFilter").addEventListener("change",renderRows);
-  $("departmentFilter").addEventListener("change",renderRows);
-  $("closeModal").addEventListener("click",closeModal);
-  $("detailOverlay").addEventListener("click",e=>{if(e.target===$("detailOverlay"))closeModal();});
-  $("approveBtn").addEventListener("click",()=>decide("Approved"));
-  $("rejectBtn").addEventListener("click",()=>decide("Rejected"));
-  $("printBtn").addEventListener("click",()=>{if(selectedReport)printReport(selectedReport);});
-  window.addEventListener("afterprint",()=>{$("printArea").innerHTML="";});
-  if(initRole())loadReports();
+/* =========================================
+   BUTTONS AND EVENTS
+========================================= */
+
+$("refreshBtn").addEventListener("click", loadReports);
+
+$("searchInput").addEventListener("input", renderRows);
+$("statusFilter").addEventListener("change", renderRows);
+$("departmentFilter").addEventListener("change", renderRows);
+
+$("closeModal").addEventListener("click", closeModal);
+
+$("detailOverlay").addEventListener("click", event => {
+    if (event.target === $("detailOverlay")) {
+        closeModal();
+    }
+});
+
+$("approveBtn").addEventListener("click", () => {
+    decide("Approved");
+});
+
+$("rejectBtn").addEventListener("click", () => {
+    decide("Rejected");
+});
+
+$("printBtn").addEventListener("click", () => {
+    if (selectedReport) {
+        printReport(selectedReport);
+    }
+});
+
+window.addEventListener("afterprint", () => {
+    $("printArea").innerHTML = "";
+});
+
+/* =========================================
+   START PAGE
+========================================= */
+
+if (initRole()) {
+    loadReports();
+}
+
 })();
 </script>
 </body>
